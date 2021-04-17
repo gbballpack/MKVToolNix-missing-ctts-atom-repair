@@ -29,7 +29,7 @@ do
   mkvmerge -A -S -o temp.video.mkv "${newFileName}".mp4
   # Create temp file containing all audio and subtitles from original
   mkvmerge -D -o temp.audio.mkv "${newFileName}".mp4
-  # Recombine them into a new .mp4 file
+  # Recombine them into a new .mkv file
   ffmpeg -loglevel 0 -hide_banner -stats -y -i temp.video.mkv -i temp.audio.mkv -c copy -c:s srt -map 0 -map 1 "${newFileName}".mkv
   # Delete temp files used
   rm temp.video.mkv temp.audio.mkv
