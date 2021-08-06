@@ -10,6 +10,11 @@ if ! [ -x "$(command -v ffmpeg)" ]; then
   exit 1
 fi
 
+if ! [ -x "$(command -v AtomicParsley)" ]; then
+  echo 'Error: AtomicParsley is not installed.' >&2
+  exit 1
+fi
+
 # Save original Input File Separator
 SAVEIFS=$IFS
 # Set the temporary IFS for this script
@@ -25,6 +30,10 @@ do
   # Print out name of the file we're working on
   echo $f
   newFileName="${f%.mp4}"
+  # Check if the file has missing CTTS atom
+  AtomicParsley $f -T 1 | grep -q ctts
+  CHECK=$?
+  if [ $CHECK -eq 0 ]; then echo "$f already has CTTS atom, skipping"; continue; fi
   # Create temp file containing all videos from original .mp4
   mkvmerge -A -S -o temp.video.mkv "${newFileName}".mp4
   # Create temp file containing all audio and subtitles from original
